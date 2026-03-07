@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model UserProgress {
+  id            String   @id @default(cuid())
+  userEmail     String
+  levelKey      String
+  lessonSlug    String
+  quizScore     Int
+  quizTotal     Int
+  practiceScore Int
+  practiceTotal Int
+  completed     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userEmail, levelKey, lessonSlug])
+  @@index([userEmail, levelKey])
+}
+
+model PlacementResult {
+  id               String   @id @default(cuid())
+  userEmail        String   @unique
+  score            Int
+  total            Int
+  recommendedLevel String
+  takenAt          DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model DailyActivity {
+  id           String   @id @default(cuid())
+  userEmail    String
+  activityDate DateTime
+  xpEarned     Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userEmail, activityDate])
+  @@index([userEmail, activityDate])
+}
+
+model ReviewCard {
+  id             String    @id @default(cuid())
+  userEmail      String
+  levelKey       String
+  lessonSlug     String
+  promptId       String
+  cardType       String
+  frontText      String
+  backText       String
+  repetitions    Int       @default(0)
+  intervalDays   Int       @default(1)
+  easeFactor     Float     @default(2.5)
+  dueAt          DateTime  @default(now())
+  lastReviewedAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([userEmail, levelKey, lessonSlug, promptId, cardType])
+  @@index([userEmail, dueAt])
+}
+
+model SpeakingEvaluation {
+  id             String   @id @default(cuid())
+  userEmail      String
+  levelKey       String
+  lessonSlug     String
+  targetText     String
+  transcriptText String
+  accuracyScore  Int
+  feedback       String
+  createdAt      DateTime @default(now())
+
+  @@index([userEmail, createdAt])
+}

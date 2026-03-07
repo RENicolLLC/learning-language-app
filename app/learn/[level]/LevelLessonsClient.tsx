@@ -2,24 +2,68 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import type { Level } from "../../../lib/curriculum";
 import { getPlacementResult, type PlacementResult } from "../../../lib/placement";
-import { getProgressMap, type ProgressMap } from "../../../lib/progress";
+import {
+  getProgressMap,
+  type LessonProgress,
+  type ProgressMap,
+} from "../../../lib/progress";
 
 type LevelLessonsClientProps = {
   level: Level;
 };
 
 export default function LevelLessonsClient({ level }: LevelLessonsClientProps) {
+  const { status } = useSession();
   const [progress, setProgress] = useState<ProgressMap>({});
   const [placementResult, setPlacementResult] = useState<PlacementResult | null>(
     null,
   );
+  const [syncNotice, setSyncNotice] = useState("");
 
   useEffect(() => {
+    if (status === "authenticated") {
+      Promise.all([
+        fetch(`/api/progress?levelKey=${level.key}`).then((response) =>
+          response.ok ? response.json() : Promise.reject(new Error("progress")),
+        ),
+        fetch("/api/placement").then((response) =>
+          response.ok ? response.json() : Promise.reject(new Error("placement")),
+        ),
+      ])
+        .then(
+          ([progressData, placementData]: [
+            { items: LessonProgress[] },
+            { item: PlacementResult | null },
+          ]) => {
+            const mapped = (progressData.items ?? []).reduce<ProgressMap>(
+              (map, item) => {
+                map[`${item.levelKey}/${item.lessonSlug}`] = item;
+                return map;
+              },
+              {},
+            );
+            setProgress(mapped);
+            setPlacementResult(placementData.item ?? null);
+            setSyncNotice("Synced from your cloud account.");
+          },
+        )
+        .catch(() => {
+          setProgress(getProgressMap());
+          setPlacementResult(getPlacementResult());
+          setSyncNotice("Cloud sync failed. Showing device data.");
+        });
+      return;
+    }
+
     setProgress(getProgressMap());
     setPlacementResult(getPlacementResult());
-  }, []);
+    if (status === "unauthenticated") {
+      setSyncNotice("Sign in to sync this progress across devices.");
+    }
+  }, [level.key, status]);
 
   const isRecommended = placementResult?.recommendedLevel === level.key;
 
@@ -41,6 +85,7 @@ export default function LevelLessonsClient({ level }: LevelLessonsClientProps) {
             This level was recommended by your placement test.
           </p>
         ) : null}
+        <p className="mt-2 text-xs text-slate-500">{syncNotice}</p>
       </section>
 
       <section className="mt-6 grid gap-5 md:grid-cols-2">

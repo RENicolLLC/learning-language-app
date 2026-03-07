@@ -19,8 +19,12 @@ vocabulary, dialogue, quizzes, and writing practice.
   - Fill-in writing checks with instant feedback
 - Progress and learning tools:
   - Browser-based lesson progress save (including scores)
+  - Cloud progress sync (when signed in) for cross-device learning
   - Placement test that recommends a level automatically
   - Built-in American pronunciation playback using browser speech
+  - Speaking evaluation with transcript scoring + feedback
+  - Spaced-repetition review deck with SM-2 scheduling
+  - Daily streak and XP tracking
 
 ## Routes
 
@@ -29,6 +33,7 @@ vocabulary, dialogue, quizzes, and writing practice.
 - `/learn` - Level selection
 - `/learn/[level]` - Lesson list for a level
 - `/learn/[level]/[lesson]` - Interactive lesson experience
+- `/review` - Spaced repetition daily review cards
 
 ## Getting started
 
@@ -38,13 +43,25 @@ vocabulary, dialogue, quizzes, and writing practice.
 npm install
 ```
 
-2. Run the development server:
+2. Set environment variables (copy and edit):
+
+```bash
+cp .env.example .env.local
+```
+
+3. Initialize the database:
+
+```bash
+npm run db:push
+```
+
+4. Run the development server:
 
 ```bash
 npm run dev
 ```
 
-3. Open:
+5. Open:
 
 ```text
 http://localhost:3000
@@ -59,3 +76,6 @@ to fully work, set:
 - `GITHUB_SECRET`
 
 in your environment configuration.
+
+To sync learning data across devices, users should sign in with GitHub. If not
+signed in, the app still works with local device-only progress.
