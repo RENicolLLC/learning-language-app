@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { LessonClient } from "./LessonClient";
-import { getLesson } from "../../../../lib/curriculum";
+import { getLesson, type LevelKey } from "../../../../lib/curriculum";
 
 type LessonPageProps = {
   params: {
@@ -15,5 +15,5 @@ export default function LessonPage({ params }: LessonPageProps) {
     notFound();
   }
 
-  return <LessonClient lesson={lesson} levelKey={params.level} />;
+  return <LessonClient lesson={lesson} levelKey={params.level as LevelKey} />;
 }

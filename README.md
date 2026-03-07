@@ -17,6 +17,10 @@ vocabulary, dialogue, quizzes, and writing practice.
 - Interactive practice in each lesson:
   - Multiple-choice quiz
   - Fill-in writing checks with instant feedback
+- Progress and learning tools:
+  - Browser-based lesson progress save (including scores)
+  - Placement test that recommends a level automatically
+  - Built-in American pronunciation playback using browser speech
 
 ## Routes
 
