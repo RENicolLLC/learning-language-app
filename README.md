@@ -37,6 +37,16 @@ vocabulary, dialogue, quizzes, and writing practice.
 
 ## Getting started
 
+### Node.js requirement
+
+- Node.js **20+** is required.
+- If you use `nvm`, run:
+
+```bash
+nvm install 20
+nvm use 20
+```
+
 1. Install dependencies:
 
 ```bash
