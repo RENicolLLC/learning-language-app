@@ -12,3 +12,5 @@ pnpm-debug.log*
 .env.production.local
 prisma/dev.db
 prisma/dev.db-journal
+prisma/prisma/dev.db
+prisma/prisma/dev.db-journal
